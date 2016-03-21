@@ -25,6 +25,14 @@ App = React.createClass({
     return (
       <div>
         <h1>NOPD Service Calls 2016</h1>
+        <p>Displaying time it took NOPD to arrive on scence.</p>
+        <ul>
+          <li>Blue - 1 minute or less</li>
+          <li>Yellow - 5 minutes or less</li>
+          <li>Orange - 15 minutes or less</li>
+          <li>Red - 1 hour or less</li>
+          <li>Black - more than an hour</li>
+        </ul>
         <div id="map">
 
         </div>
@@ -37,11 +45,12 @@ var markers = function() {
   var serviceCalls = ServiceCalls.find({arrivedIn: {$gt: 0}}).fetch()
 
   return _.map(serviceCalls, c => {
+    var arrivedIn = parseInt(parseInt(c.arrivedIn) / 1000 / 60)
     var row = [
       parseFloat(c.latitude),
       parseFloat(c.longitude),
       markerColor(c),
-      c.typeDesc
+      c.typeDesc + " (" + arrivedIn + "min / " + c.createdAt + ")"
       // parseFloat(parseInt(c.arrivedIn) / max)
     ]
 
@@ -55,7 +64,7 @@ var servicePoints = function() {
   //
   // console.log('max ' + max);
   return _.map(serviceCalls, c => {
-    console.log(c.arrivedIn);
+    // console.log(c.arrivedIn);
 
     var row = [
       parseFloat(c.latitude),
@@ -64,7 +73,7 @@ var servicePoints = function() {
       // parseFloat(parseInt(c.arrivedIn) / max)
     ]
 
-    console.log(row);
+    // console.log(row);
     return row
   })
 }
@@ -72,7 +81,7 @@ var servicePoints = function() {
 //http://stackoverflow.com/questions/25354656/mapbox-dynamic-markers-in-meteor-js
 var intensity = function(serviceCall) {
   var arrivedIn = parseInt(serviceCall.arrivedIn)
-  console.log(serviceCall.createdAt + " " + serviceCall.arrivedAt);
+  // console.log(serviceCall.createdAt + " " + serviceCall.arrivedAt);
   var oneMin = 1000 * 60
   var fiveMin = oneMin * 5
   var fifteenMin = oneMin * 15
@@ -90,7 +99,7 @@ var intensity = function(serviceCall) {
 
 var markerColor = function(serviceCall) {
   var arrivedIn = parseInt(serviceCall.arrivedIn)
-  console.log(serviceCall.createdAt + " " + serviceCall.arrivedAt);
+  // console.log(serviceCall.createdAt + " " + serviceCall.arrivedAt);
   var oneMin = 1000 * 60
   var fiveMin = oneMin * 5
   var fifteenMin = oneMin * 15
