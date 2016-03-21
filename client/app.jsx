@@ -25,7 +25,7 @@ App = React.createClass({
     return (
       <div>
         <h1>NOPD Service Calls 2016</h1>
-        <p>Displaying time it took NOPD to arrive on scence.</p>
+        <p>Displaying time it took NOPD to arrive on scence after 911 call made.</p>
         <ul>
           <li>Blue - 1 minute or less</li>
           <li>Yellow - 5 minutes or less</li>
