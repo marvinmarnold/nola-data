@@ -1,38 +1,35 @@
-// Meteor.startup(function() {
-//   // ReactDOM.render(<App />, document.getElementById("render-target"));
-//
-//
-// });
-// // Using a template's rendered callback
-Meteor.startup(function(){
+Meteor.startup(function() {
+  ReactDOM.render(<App />, document.getElementById("render-target"));
+
   Mapbox.load({
     plugins: ['heat', 'label']
   });
 });
 
-Template.map.rendered = function () {
-    var map
-    this.autorun(function () {
-      console.log('subscriptions ready ' + Template.instance().subscriptionsReady());
-        if (Mapbox.loaded() && (ServiceCalls.find().count() > 995) && !map) {
-          console.log("Mapbox loaded " + ServiceCalls.find().count());
-          L.mapbox.accessToken = Meteor.settings.public.MAPBOX_TOKEN;
-          map = L.mapbox.map('map', 'mapbox.streets').setView([29.942355, -90.078635], 12);
 
-          // var heat = L.heatLayer(servicePoints(), {maxZoom: 18}).addTo(map);
-
-          _.each(markers(), m => {
-            L.marker([m[0], m[1]], {
-                icon: L.mapbox.marker.icon({
-                    'marker-size': 'small',
-                    'marker-symbol': 'bus',
-                    'marker-color': m[2]
-                })
-            }).bindLabel(m[3]).addTo(map);
-          })
-        }
-    });
-};
+// Template.map.rendered = function () {
+//     var map
+//     this.autorun(function () {
+//       console.log('subscriptions ready ' + Template.instance().subscriptionsReady());
+//         if (Mapbox.loaded() && (ServiceCalls.find().count() > 995) && !map) {
+//           console.log("Mapbox loaded " + ServiceCalls.find().count());
+//           L.mapbox.accessToken = Meteor.settings.public.MAPBOX_TOKEN;
+//           map = L.mapbox.map('map', 'mapbox.streets').setView([29.942355, -90.078635], 12);
+//
+//           // var heat = L.heatLayer(servicePoints(), {maxZoom: 18}).addTo(map);
+//
+//           _.each(markers(), m => {
+//             L.marker([m[0], m[1]], {
+//                 icon: L.mapbox.marker.icon({
+//                     'marker-size': 'small',
+//                     'marker-symbol': 'bus',
+//                     'marker-color': m[2]
+//                 })
+//             }).bindLabel(m[3]).addTo(map);
+//           })
+//         }
+//     });
+// };
 //
 // Deps.autorun(function() {
 //   if(Mapbox.loaded() ) {
