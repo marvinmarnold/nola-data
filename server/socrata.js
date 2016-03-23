@@ -8,54 +8,67 @@ Meteor.startup(function () {
     XAppToken: Meteor.settings.SOCRATA_APP_TOKEN
   };
 
-  var soda = new Socrata(config);
+  soda = new Socrata(config);
 
+  sodaFetch(soda, 0)
+});
+
+var sodaFetch = function(soda, offset) {
+  console.log("Fetching Socrata " + offset);
   var sodaCallback = Meteor.bindEnvironment(function(err, response, data) {
-    console.log(response);
     _.each(data, insertServiceCall)
+
+    // if(data.length > 0)
+    //   sodaFetch(soda, offset + 1000)
   }, function(error) {
     console.log("Soda callback could not bind");
   })
 
-  soda.get(sodaCallback);
-
-});
+  soda.get({$offset: offset}, sodaCallback);
+}
 
 var insertServiceCall = function(doc) {
   var serviceCall = {
     nopdItem: doc.nopd_item,
     latitude: doc.location.latitude,
     longitude: doc.location.longitude,
-    createdAt: doc.timecreate,
-    dispatchedAt: doc.timedispatch,
-    arrivedAt: doc.timearrive,
-    closedAt: doc.timeclosed,
-    type: doc.type_,
-    typeDesc: doc.typetext,
-    zip: doc.zip,
+    createdAt: new Date(doc.timecreate),
+    closedAt: new Date(doc.timeclosed),
+    nopdType: doc.type_,
+    nopdTypeDesc: doc.typetext,
     block: doc.block_address,
-    priority: doc.priority,
+    priorityNum: doc.priority.substr(0,1),
+    priorityLetter: doc.priority.substr(1),
     district: doc.policedistrict
   }
 
+  if(doc.timearrive)
+    serviceCall.arrivedAt = new Date(doc.timearrive)
+
+  if(doc.timedispatch)
+    serviceCall.dispatchedAt = new Date(doc.timedispatch)
+
+  if(doc.zip)
+    serviceCall.zip = doc.zip
+
   if(serviceCall.createdAt && serviceCall.dispatchedAt) {
-    var createdAt = new Date(serviceCall.createdAt).getTime()
-    var dispatchedAt = new Date(serviceCall.dispatchedAt).getTime()
+    var createdAt = serviceCall.createdAt.getTime()
+    var dispatchedAt = serviceCall.dispatchedAt.getTime()
     serviceCall.dispatchedIn = dispatchedAt - createdAt
   } else {
     serviceCall.dispatchedIn = -1
   }
 
   if(serviceCall.createdAt && serviceCall.arrivedAt) {
-    var createdAt = new Date(serviceCall.createdAt).getTime()
-    var arrivedAt = new Date(serviceCall.arrivedAt).getTime()
+    var createdAt = serviceCall.createdAt.getTime()
+    var arrivedAt = serviceCall.arrivedAt.getTime()
     serviceCall.arrivedIn = arrivedAt - createdAt
   } else {
     serviceCall.arrivedIn = -1
   }
 
   ServiceCalls.upsert({
-    nopdItem: doc.nopd_item
+    nopdItem: serviceCall.nopdItem
   }, {
     $set: serviceCall
   })

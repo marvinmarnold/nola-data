@@ -1,41 +1,32 @@
-var map = undefined;
-var markerLayer = undefined;
-
 App = React.createClass({
   mixins: [ReactMeteorData],
 
   getMeteorData() {
-    Tracker.autorun(function () {
-      console.log('subscriptions ready ');
-        if (Mapbox.loaded()) {
-          console.log("Mapbox loaded " + ServiceCalls.find().count());
-          L.mapbox.accessToken = Meteor.settings.public.MAPBOX_TOKEN;
+    Meteor.subscribe("service-calls/arrived-at", 100);
 
-          if(!map)
-            map = L.mapbox.map('map', 'mapbox.streets').setView([29.942355, -90.078635], 12);
-
-          if(map) {
-            console.log('setting marker layer');
-            if(!markerLayer)
-              markerLayer = L.mapbox.featureLayer(geojsonMarkers()).addTo(map);
-            // var heat = L.heatLayer(servicePoints(), {maxZoom: 18}).addTo(map);
-
-
-            markerLayer.setGeoJSON(geojsonMarkers())
-            console.log(geojsonMarkers());
-          }
-
-        }
-    });
+    var filter = {}
+    if(this.state.priorityNum)
+      filter.priorityNum = this.state.priorityNum
 
     return {
-      serviceCalls: ServiceCalls.find({}, {limit: 100}).fetch()
+      serviceCalls: ServiceCalls.find(filter).fetch()
     }
   },
 
-  componentDidMount() {
-    // map = undefined;
-    // markerLayer = undefined;
+  getInitialState() {
+    return {
+      priorityNum: undefined
+    }
+  },
+
+  filterPriorityNum1() {
+    console.log('low priority');
+    this.setState({priorityNum: 1})
+  },
+
+  filterPriorityNum2() {
+    console.log('high priority');
+    this.setState({priorityNum: 2})
   },
 
   render() {
@@ -51,73 +42,29 @@ App = React.createClass({
           <li>Black - more than an hour</li>
         </ul>
 
-        <div id="map"></div>
+        <div className="filters">
+          <h2>Filter by Priority</h2>
+          <button onClick={this.filterPriorityNum1}>Low Priority</button>
+          <button onClick={this.filterPriorityNum2}>High Priority</button>
+
+          <h2>Filter by Date</h2>
+          <label>Start Date</label>
+          <input type='text'></input>
+
+          <label>End Date</label>
+          <input type='text'></input>
+
+        </div>
+
+        <ServiceCallsMap serviceCalls={this.data.serviceCalls} />
+
+      <p>
+        Source
+        &nbsp;<a href="https://data.nola.gov/Public-Safety-and-Preparedness/Calls-for-Service-2016/wgrp-d3ma">
+          https://data.nola.gov/Public-Safety-and-Preparedness/Calls-for-Service-2016/wgrp-d3ma
+        </a>
+      </p>
       </div>
     )
   }
 })
-
-// var markers = function() {
-//   var serviceCalls = ServiceCalls.find({arrivedIn: {$gt: 0}}).fetch()
-//
-//   return _.map(serviceCalls, c => {
-//     var arrivedIn = parseInt(parseInt(c.arrivedIn) / 1000 / 60)
-//     var row = [
-//       parseFloat(c.latitude),
-//       parseFloat(c.longitude),
-//       markerColor(c),
-//       c.typeDesc + " (" + arrivedIn + "min / " + c.createdAt + ")"
-//       // parseFloat(parseInt(c.arrivedIn) / max)
-//     ]
-//
-//     return row
-//   })
-// }
-
-var geojsonMarkers = function() {
-  var serviceCalls = ServiceCalls.find({arrivedIn: {$gt: 0}}).fetch()
-
-  var features = _.map(serviceCalls, c => {
-    var arrivedIn = parseInt(parseInt(c.arrivedIn) / 1000 / 60)
-
-    return  {
-        "type": "Feature",
-        "geometry": {
-            "type": "Point",
-            "coordinates": [c.longitude, c.latitude]
-        },
-        "properties": {
-            "title": c.typeDesc + " (" + arrivedIn + "min / " + c.createdAt + ")",
-            "marker-symbol": "monument",
-            "marker-color": markerColor(c),
-            "marker-size": "small"
-        }
-      }
-    })
-
-    return  {
-      "type": "FeatureCollection",
-      "features": features
-    }
-  }
-
-
-var markerColor = function(serviceCall) {
-  var arrivedIn = parseInt(serviceCall.arrivedIn)
-  // console.log(serviceCall.createdAt + " " + serviceCall.arrivedAt);
-  var oneMin = 1000 * 60
-  var fiveMin = oneMin * 5
-  var fifteenMin = oneMin * 15
-  var oneHour = oneMin * 60
-  if(arrivedIn < oneMin) {
-    return "#615ff7"
-  } else if(arrivedIn < fiveMin) {
-    return "#c8f23d"
-  } else if(arrivedIn < fifteenMin) {
-    return "#d16c24"
-  } else if(arrivedIn < oneHour) {
-    return "#ba3131"
-  } else {
-    return "#000"
-  }
-}
