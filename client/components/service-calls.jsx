@@ -26,13 +26,21 @@ ServiceCallsMap = React.createClass({
             .featureLayer(serviceCallsToFeatureJSON(thiz.props.serviceCalls))
             .addTo(map);
 
-          for(let i = 1; i <= NUM_DISTRICTS; i++) {
-            console.log('drawing district ' + i);
-            L.polygon(districtLatLngs(i), {color: "#55da8e"}).addTo(map);
-          }
+          Meteor.call("districts/ordered", function(error, orderedDistricts) {
+            if(error)
+              console.log("error", error);
+
+            if(orderedDistricts) {
+              for(let i = 0; i < NUM_DISTRICTS; i++) {
+                var districtNum = orderedDistricts[i].districtNum
+
+                L.polygon(districtLatLngs(districtNum), {color: oridnalDistrictColor(i+1)}).addTo(map);
+              }
+            }
+          });
+
         }
 
-        console.log(thiz.props.serviceCalls.length);
         markerLayer.setGeoJSON(serviceCallsToFeatureJSON(thiz.props.serviceCalls))
       }
     });

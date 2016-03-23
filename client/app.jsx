@@ -19,13 +19,15 @@ App = React.createClass({
     }
   },
 
+  filterPriorityNum0() {
+    this.setState({priorityNum: undefined})
+  },
+
   filterPriorityNum1() {
-    console.log('low priority');
     this.setState({priorityNum: 1})
   },
 
   filterPriorityNum2() {
-    console.log('high priority');
     this.setState({priorityNum: 2})
   },
 
@@ -44,6 +46,7 @@ App = React.createClass({
 
         <div className="filters">
           <h2>Filter by Priority</h2>
+          <button onClick={this.filterPriorityNum0}>All Priorities</button>
           <button onClick={this.filterPriorityNum1}>Low Priority</button>
           <button onClick={this.filterPriorityNum2}>High Priority</button>
 
