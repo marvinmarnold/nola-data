@@ -16,7 +16,9 @@ App = React.createClass({
   getInitialState() {
     return {
       priorityNum: undefined,
-      nopdType: undefined
+      nopdType: undefined,
+      startDate: undefined,
+      endDate: undefined
     }
   },
 
@@ -43,6 +45,20 @@ App = React.createClass({
     )
   },
 
+  componentDidMount() {
+    var thiz = this
+    $('.startDate').pickadate({
+      onSet: function(context) {
+        thiz.setState({startDate: new Date(context.select)})
+      }
+    });
+    $('.endDate').pickadate({
+      onSet: function(context) {
+        thiz.setState({endDate: new Date(context.select)})
+      }
+    });
+  },
+
   renderFilters() {
     return (
       <div className="filters">
@@ -51,7 +67,8 @@ App = React.createClass({
         <button onClick={() => this.filterPriority(1)}>Low Priority</button>
         <button onClick={() => this.filterPriority(2)}>High Priority</button>
 
-        <h2>Filter by Type (Unimplemented)</h2>
+        <h2>Filter by Type (Working, more types must be added)</h2>
+        <button onClick={() => this.filterType(undefined)}><i className='fa fa-star'></i> All Types</button>
         <button onClick={() => this.filterType("94F")}><i className='fa fa-star'></i> 94F - Fireworks</button>
         <button onClick={() => this.filterType("18")}><i className='fa fa-star'></i> 18 - Traffic Incident</button>
         <button onClick={() => this.filterType("94")}><i className='fa fa-star'></i> 94 - Discharging Firearm</button>
@@ -75,10 +92,10 @@ App = React.createClass({
         <button onClick={() => this.filterType("100")}><i className='fa fa-star'></i> 100 - Hit and Run</button>
         <h2>Filter by Date (Unimplemented)</h2>
         <label>Start Date</label>
-        <input type='text'></input>
+        <input type='text' className="startDate"></input>
 
         <label>End Date</label>
-        <input type='text'></input>
+        <input type='text' className="endDate"></input>
 
       </div>
     )
@@ -95,8 +112,7 @@ App = React.createClass({
 
         <ServiceCallsMap
           serviceCalls={this.data.serviceCalls}
-          priorityNum={this.state.priorityNum}
-          nopdType={this.state.nopdType} />
+          state={this.state} />
 
       <p>
         Source

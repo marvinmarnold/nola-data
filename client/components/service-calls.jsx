@@ -33,28 +33,47 @@ ServiceCallsMap = React.createClass({
           districtLayer.setGeoJSON([])
           var selector = {}
 
-          if(thiz.props.priorityNum)
-            selector.priorityNum = thiz.props.priorityNum
+          // var filters = ['priorityNum', 'nopdType', 'startDate', 'endDate']
+          // _.each(filters, filter => {
+          //   var filterVal = thiz.props.state[filter]
+          //   if(filterVal)
+          //     selector[filter] = filterVal
+          // })
 
-          if(thiz.props.nopdType)
-            selector.nopdType = thiz.props.nopdType
+          var priorityNum = thiz.props.state.priorityNum
+          if(priorityNum)
+            selector.priorityNum = priorityNum
 
-            Meteor.call("districts/avg-waits", selector, function(error, orderedDistricts) {
-              if(error)
-                console.log("error", error);
+          var nopdType = thiz.props.state.nopdType
+          if(nopdType)
+            selector.nopdType = nopdType
 
-              if(orderedDistricts) {
-                for(let i = 0; i < NUM_DISTRICTS; i++) {
-                  var districtNum = orderedDistricts[i].districtNum
-                  var avgWait = orderedDistricts[i].avg_wait / 1000 / 60
-                  var ord = i + 1
+          var startDate = thiz.props.state.startDate
+          if(startDate)
+            selector.createdAt = {$gte: startDate}
 
-                  L.polygon(districtLatLngs(districtNum), {color: oridnalDistrictColor(ord)})
-                    .bindLabel('#' + ord + ' - ' + avgWait + 'min')
-                    .addTo(districtLayer);
-                }
+          var endDate = thiz.props.state.endDate
+          if(endDate)
+            selector.createdAt = {$lte: endDate}
+
+          console.log(selector);
+
+          Meteor.call("districts/avg-waits", selector, function(error, orderedDistricts) {
+            if(error)
+              console.log("error", error);
+
+            if(orderedDistricts) {
+              for(let i = 0; i < NUM_DISTRICTS; i++) {
+                var districtNum = orderedDistricts[i].districtNum
+                var avgWait = orderedDistricts[i].avg_wait / 1000 / 60
+                var ord = i + 1
+
+                L.polygon(districtLatLngs(districtNum), {color: oridnalDistrictColor(ord)})
+                  .bindLabel('#' + ord + ' - ' + avgWait + 'min')
+                  .addTo(districtLayer);
               }
-            });
+            }
+          });
         }
 
         markerLayer.setGeoJSON(serviceCallsToFeatureJSON(thiz.props.serviceCalls))
