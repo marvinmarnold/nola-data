@@ -27,6 +27,7 @@ App = React.createClass({
   },
 
   filterType(_type) {
+    console.log(_type);
     this.setState({nopdType: _type})
   },
 
@@ -67,30 +68,13 @@ App = React.createClass({
         <button onClick={() => this.filterPriority(1)}>Low Priority</button>
         <button onClick={() => this.filterPriority(2)}>High Priority</button>
 
-        <h2>Filter by Type (Working, more types must be added)</h2>
+        <h2>Filter by Type (Working)</h2>
         <button onClick={() => this.filterType(undefined)}><i className='fa fa-star'></i> All Types</button>
-        <button onClick={() => this.filterType("94F")}><i className='fa fa-star'></i> 94F - Fireworks</button>
-        <button onClick={() => this.filterType("18")}><i className='fa fa-star'></i> 18 - Traffic Incident</button>
-        <button onClick={() => this.filterType("94")}><i className='fa fa-star'></i> 94 - Discharging Firearm</button>
-        <button onClick={() => this.filterType("103D")}><i className='fa fa-star'></i> 103D - Domestic Disturbance</button>
-        <button onClick={() => this.filterType("24")}><i className='fa fa-star'></i> 24 - Medical</button>
-        <button onClick={() => this.filterType("62A")}><i className='fa fa-star'></i> 62A - Burglar Alarm, Silent</button>
-        <button onClick={() => this.filterType("21")}><i className='fa fa-star'></i> 21 - Complaint Other</button>
-        <button onClick={() => this.filterType("67P")}><i className='fa fa-star'></i> 67P - Pickpocket</button>
-        <button onClick={() => this.filterType("107")}><i className='fa fa-star'></i> 107 - Suspicious Person</button>
-        <button onClick={() => this.filterType("64A")}><i className='fa fa-star'></i> 64A - Hold Up Alarm</button>
-        <button onClick={() => this.filterType("21P")}><i className='fa fa-star'></i> 21P - Lost Property</button>
-        <button onClick={() => this.filterType("103")}><i className='fa fa-star'></i> 103 - Disturbance Other</button>
-        <button onClick={() => this.filterType("911")}><i className='fa fa-star'></i> 911 - Silent 911 Call</button>
-        <button onClick={() => this.filterType("62R")}><i className='fa fa-star'></i> 62R - Residence Burglary</button>
-        <button onClick={() => this.filterType("67A")}><i className='fa fa-star'></i> 67A - Auto Theft</button>
-        <button onClick={() => this.filterType("20")}><i className='fa fa-star'></i> 20 - Auto Accident</button>
-        <button onClick={() => this.filterType("42U")}><i className='fa fa-star'></i> 42U - Aggravated Rape</button>
-        <button onClick={() => this.filterType("17R")}><i className='fa fa-star'></i> 17R - WARR Stop with Release</button>
-        <button onClick={() => this.filterType("103M")}><i className='fa fa-star'></i> 103M - Mental Patient</button>
-        <button onClick={() => this.filterType("20I")}><i className='fa fa-star'></i> 20I - Auto Accident with Injury</button>
-        <button onClick={() => this.filterType("100")}><i className='fa fa-star'></i> 100 - Hit and Run</button>
-        <h2>Filter by Date (Unimplemented)</h2>
+        {_.map(NOPD_TYPES, (desc, _type) => {
+          return <button key={_type} onClick={() => this.filterType(_type)}><i className='fa fa-star'></i> {_type} - {desc}</button>
+        })}
+
+        <h2>Filter by Date (Working)</h2>
         <label>Start Date</label>
         <input type='text' className="startDate"></input>
 

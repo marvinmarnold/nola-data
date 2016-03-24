@@ -10,7 +10,7 @@ Meteor.startup(function () {
 
   soda = new Socrata(config);
 
-  if(ServiceCalls.find().count() === 0)
+  // if(ServiceCalls.find().count() === 0)
     sodaFetch(soda, 0)
 });
 
