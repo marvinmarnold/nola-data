@@ -26,15 +26,17 @@ ServiceCallsMap = React.createClass({
             .featureLayer(serviceCallsToFeatureJSON(thiz.props.serviceCalls))
             .addTo(map);
 
-          Meteor.call("districts/ordered", function(error, orderedDistricts) {
+          Meteor.call("districts/avg-waits", function(error, orderedDistricts) {
             if(error)
               console.log("error", error);
 
             if(orderedDistricts) {
               for(let i = 0; i < NUM_DISTRICTS; i++) {
                 var districtNum = orderedDistricts[i].districtNum
-
-                L.polygon(districtLatLngs(districtNum), {color: oridnalDistrictColor(i+1)}).addTo(map);
+                var avgWait = orderedDistricts[i].avg_wait / 1000 / 60
+                L.polygon(districtLatLngs(districtNum), {color: oridnalDistrictColor(i+1)})
+                  .bindLabel('#' + i + ' - ' + avgWait + 'min')
+                  .addTo(map);
               }
             }
           });

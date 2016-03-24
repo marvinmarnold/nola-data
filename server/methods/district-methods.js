@@ -1,15 +1,42 @@
 Meteor.methods({
-  'districts/ordered': function() {
-    // get count of calls in each district
+
+  // Returns an array of districts,
+  // by number of service calls, in increasing order
+  "districts/gross-service-calls": function(selector) {
     var counts = []
 
     for(let i = 1; i <= NUM_DISTRICTS; i++) {
+      var selector = {district: i}
+
       counts.push({
         districtNum: i,
-        count: ServiceCalls.find({district: i}).count()
+        gross_service_calls: ServiceCalls.find(selector).count()
       })
     }
 
     return _.sortBy(counts, "count")
+  },
+
+  // Returns and array of districts,
+  // by average wait time (miliseconds) within the district,
+  // in increasing order
+  "districts/avg-waits": function() {
+    var avgWaits = []
+
+    for(let i = 1; i <= NUM_DISTRICTS; i++) {
+      var selector = {district: i, arrivedIn: {$exists: true}}
+      var serviceCalls = ServiceCalls.find(selector).fetch()
+
+      var totalWait = _.reduce(serviceCalls, (total, serviceCall) => {
+        return total + serviceCall.arrivedIn
+      }, 0)
+
+      avgWaits.push({
+        districtNum: i,
+        avg_wait: totalWait / serviceCalls.length
+      })
+    }
+
+    return _.sortBy(avgWaits, "avg_wait")
   }
 });

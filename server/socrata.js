@@ -18,8 +18,8 @@ var sodaFetch = function(soda, offset) {
   var sodaCallback = Meteor.bindEnvironment(function(err, response, data) {
     _.each(data, insertServiceCall)
 
-    // if(data.length > 0)
-    //   sodaFetch(soda, offset + 1000)
+    if(data.length > 0)
+      sodaFetch(soda, offset + 1000)
   }, function(error) {
     console.log("Soda callback could not bind");
   })
@@ -55,16 +55,12 @@ var insertServiceCall = function(doc) {
     var createdAt = serviceCall.createdAt.getTime()
     var dispatchedAt = serviceCall.dispatchedAt.getTime()
     serviceCall.dispatchedIn = dispatchedAt - createdAt
-  } else {
-    serviceCall.dispatchedIn = -1
   }
 
   if(serviceCall.createdAt && serviceCall.arrivedAt) {
     var createdAt = serviceCall.createdAt.getTime()
     var arrivedAt = serviceCall.arrivedAt.getTime()
     serviceCall.arrivedIn = arrivedAt - createdAt
-  } else {
-    serviceCall.arrivedIn = -1
   }
 
   ServiceCalls.upsert({
