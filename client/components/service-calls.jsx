@@ -32,8 +32,12 @@ ServiceCallsMap = React.createClass({
         if(map) {
           districtLayer.setGeoJSON([])
           var selector = {}
+
           if(thiz.props.priorityNum)
             selector.priorityNum = thiz.props.priorityNum
+
+          if(thiz.props.nopdType)
+            selector.nopdType = thiz.props.nopdType
 
             Meteor.call("districts/avg-waits", selector, function(error, orderedDistricts) {
               if(error)
@@ -44,7 +48,7 @@ ServiceCallsMap = React.createClass({
                   var districtNum = orderedDistricts[i].districtNum
                   var avgWait = orderedDistricts[i].avg_wait / 1000 / 60
                   var ord = i + 1
-                  
+
                   L.polygon(districtLatLngs(districtNum), {color: oridnalDistrictColor(ord)})
                     .bindLabel('#' + ord + ' - ' + avgWait + 'min')
                     .addTo(districtLayer);

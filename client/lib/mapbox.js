@@ -1,10 +1,7 @@
 serviceCallsToFeatureJSON = function(serviceCalls) {
-  console.log('serviceCallsToFeatureJSON');
   var features = _.map(serviceCalls, serviceCall => {
     return serviceCallToFeatureJSON(serviceCall)
   })
-
-  console.log(features);
 
   return  {
     "type": "FeatureCollection",
@@ -43,7 +40,7 @@ var color = function(serviceCall) {
   var mid = oneMin * 15
   var high = oneMin * 30
   var highest = oneMin * 60
-  
+
   if(arrivedIn < littlest) {
     return "#615ff7"
   } else if(arrivedIn < little) {
