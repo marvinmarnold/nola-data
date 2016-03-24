@@ -20,11 +20,13 @@ Meteor.methods({
   // Returns and array of districts,
   // by average wait time (miliseconds) within the district,
   // in increasing order
-  "districts/avg-waits": function() {
+  "districts/avg-waits": function(selector) {
     var avgWaits = []
 
     for(let i = 1; i <= NUM_DISTRICTS; i++) {
-      var selector = {district: i, arrivedIn: {$exists: true}}
+      selector.district = i
+      selector.arrivedIn = {$exists: true}
+
       var serviceCalls = ServiceCalls.find(selector).fetch()
 
       var totalWait = _.reduce(serviceCalls, (total, serviceCall) => {

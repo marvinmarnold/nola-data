@@ -1,11 +1,12 @@
 var map = undefined;
 var markerLayer = undefined;
+var districtLayer = undefined;
 
 ServiceCallsMap = React.createClass({
   mixins: [ReactMeteorData],
 
   propTypes: {
-    serviceCalls: React.PropTypes.array.isRequired
+    serviceCalls: React.PropTypes.array.isRequired,
   },
 
   getMeteorData() {
@@ -13,7 +14,6 @@ ServiceCallsMap = React.createClass({
 
     Tracker.autorun(function () {
       if (Mapbox.loaded()) {
-
         if(!map) {
           L.mapbox.accessToken = Meteor.settings.public.MAPBOX_TOKEN;
 
@@ -26,21 +26,31 @@ ServiceCallsMap = React.createClass({
             .featureLayer(serviceCallsToFeatureJSON(thiz.props.serviceCalls))
             .addTo(map);
 
-          Meteor.call("districts/avg-waits", function(error, orderedDistricts) {
-            if(error)
-              console.log("error", error);
+          districtLayer = L.mapbox.featureLayer().addTo(map);
+        }
 
-            if(orderedDistricts) {
-              for(let i = 0; i < NUM_DISTRICTS; i++) {
-                var districtNum = orderedDistricts[i].districtNum
-                var avgWait = orderedDistricts[i].avg_wait / 1000 / 60
-                L.polygon(districtLatLngs(districtNum), {color: oridnalDistrictColor(i+1)})
-                  .bindLabel('#' + i + ' - ' + avgWait + 'min')
-                  .addTo(map);
+        if(map) {
+          districtLayer.setGeoJSON([])
+          var selector = {}
+          if(thiz.props.priorityNum)
+            selector.priorityNum = thiz.props.priorityNum
+
+            Meteor.call("districts/avg-waits", selector, function(error, orderedDistricts) {
+              if(error)
+                console.log("error", error);
+
+              if(orderedDistricts) {
+                for(let i = 0; i < NUM_DISTRICTS; i++) {
+                  var districtNum = orderedDistricts[i].districtNum
+                  var avgWait = orderedDistricts[i].avg_wait / 1000 / 60
+                  var ord = i + 1
+                  
+                  L.polygon(districtLatLngs(districtNum), {color: oridnalDistrictColor(ord)})
+                    .bindLabel('#' + ord + ' - ' + avgWait + 'min')
+                    .addTo(districtLayer);
+                }
               }
-            }
-          });
-
+            });
         }
 
         markerLayer.setGeoJSON(serviceCallsToFeatureJSON(thiz.props.serviceCalls))
