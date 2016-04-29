@@ -1,4 +1,4 @@
-import Meteor, { Component } from 'react';
+import React, { Component } from 'react';
 
 export default class Index extends Component {
   getProjects() {
@@ -23,7 +23,7 @@ export default class Index extends Component {
       </div>
     ));
   }
-  
+
   render() {
     return (
       <div className="container">

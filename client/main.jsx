@@ -5,4 +5,8 @@ import { renderRoutes } from '../imports/ui/routes.jsx';
 
 Meteor.startup(() => {
   render(renderRoutes(), document.getElementById('render-target'));
+
+  Mapbox.load({
+    plugins: ['heat', 'label']
+  });
 });
