@@ -1,6 +1,10 @@
 import '../api/districts-publications.js';
-import seedDistrictFeatures from './fixtures/district-fixtures.js';
+import '../api/tracts-publications.js';
+
+import seedDistrictFixtures from './fixtures/district-fixtures.js';
+import seedTractFixtures from './fixtures/tract-fixtures.js';
 
 export default function startupNolaDataServer() {
-  seedDistrictFeatures();
+  seedDistrictFixtures();
+  seedTractFixtures();
 }

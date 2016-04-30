@@ -1,11 +1,11 @@
 import BoundariesSchema from './boundaries-schema.js';
 
-export default const TractsSchema = new SimpleSchema({
+export default TractsSchema = new SimpleSchema({
   boundaries: {
     type: [BoundariesSchema],
     minCount: 3
   },
-  geoId: {
+  name: {
     type: String
   },
   landArea: {

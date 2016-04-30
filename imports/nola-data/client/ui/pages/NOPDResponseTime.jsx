@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
 import { STATES } from '../../states.js';
 import { Districts } from '../../../collections/districts.js';
+import { Tracts } from '../../../collections/tracts.js';
 
 class NOPDResponseTime extends Component {
   constructor(props) {
@@ -33,12 +34,20 @@ class NOPDResponseTime extends Component {
 
       L.polygon(districtLatLngs, {color: "#000000"})
         .bindLabel(district.name)
-        .addTo(districtLayer);
+        .addTo(this.props.districtLayer);
     });
   }
 
   renderTractLayer() {
-    console.log('renderTract');
+    _.each(this.props.tracts, tract => {
+      const tractLatLngs = _.map(tract.boundaries, boundary => {
+        return [boundary.latitude, boundary.longitude]
+      });
+
+      L.polygon(tractLatLngs, {color: "#000000"})
+        .bindLabel(tract.name)
+        .addTo(this.props.tractLayer);
+    });
   }
 
   renderBoundaryType() {
@@ -60,6 +69,7 @@ class NOPDResponseTime extends Component {
   render() {
     if(!this.props.loading) {
       this.props.districtLayer.setGeoJSON([]);
+      this.props.tractLayer.setGeoJSON([]);
 
       if(this.state.view === STATES.VIEW.POLICE_DISTRICTS) {
         this.renderDistrictLayer();
@@ -88,17 +98,22 @@ class NOPDResponseTime extends Component {
 
 NOPDResponseTime.propTypes = {
   districts: React.PropTypes.array,
+  tracts: React.PropTypes.array,
   loading: React.PropTypes.bool,
   map: React.PropTypes.object,
-  districtLayer: React.PropTypes.object
+  districtLayer: React.PropTypes.object,
+  tractLayer: React.PropTypes.object
 };
 
-let map, districtLayer;
+let map, districtLayer, tractLayer;
 export default createContainer(() => {
 
   const districtsHandle = Meteor.subscribe('districts');
-  const loading = !districtsHandle.ready();
+  const tractsHandle = Meteor.subscribe('tracts');
+
+  const loading = !districtsHandle.ready() || !tractsHandle.ready();
   const districts = Districts.find().fetch();
+  const tracts = Tracts.find().fetch();
 
   const initMap = () => {
     L.mapbox.accessToken = Meteor.settings.public.MAPBOX_TOKEN;
@@ -109,6 +124,7 @@ export default createContainer(() => {
     ], 12);
 
     districtLayer = L.mapbox.featureLayer().addTo(map);
+    tractLayer = L.mapbox.featureLayer().addTo(map);
   };
 
   Tracker.autorun(function () {
@@ -121,8 +137,10 @@ export default createContainer(() => {
 
   return {
     districts: districts,
+    tracts: tracts,
     loading: loading || !map,
     map: map,
-    districtLayer: districtLayer
+    districtLayer: districtLayer,
+    tractLayer: tractLayer
   };
 }, NOPDResponseTime);
