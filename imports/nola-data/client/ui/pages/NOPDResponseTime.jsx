@@ -4,6 +4,7 @@ import { createContainer } from 'meteor/react-meteor-data';
 import { STATES } from '../../states.js';
 import { Districts } from '../../../collections/districts.js';
 import { Tracts } from '../../../collections/tracts.js';
+import { SERVICE_CALL_TYPES } from '../../../lib/service-call-types.js';
 
 class NOPDResponseTime extends Component {
   constructor(props) {
@@ -50,17 +51,57 @@ class NOPDResponseTime extends Component {
     });
   }
 
-  renderBoundaryType() {
+  renderBoundaryFilter() {
     return (
-      <div>
+      <div className='m-t-1'>
         <h3>Select View</h3>
         <div className="btn-group" data-toggle="buttons">
           <label className="btn btn-primary active" onClick={this.viewPoliceDistricts.bind(this)} >
-            <input type="radio" name="options" id="view-police-districts-radio" defaultChecked /> Police Districts
+            <input type="radio" name="options" defaultChecked /> Police Districts
           </label>
           <label className="btn btn-primary" onClick={this.viewCensusTracts.bind(this)} >
-            <input type="radio" name="options" id="view-census-tracts-radio" /> Census Tracts
+            <input type="radio" name="options" /> Census Tracts
           </label>
+        </div>
+      </div>
+    );
+  }
+
+  renderPriorityFilter() {
+    return (
+      <div className='m-t-1'>
+        <h3>Filter by Priority</h3>
+        <div className="btn-group" data-toggle="buttons">
+          <label className="btn btn-primary active">
+            <input type="radio" name="options" defaultChecked /> All Priorities
+          </label>
+          <label className="btn btn-primary">
+            <input type="radio" name="options" /> High Priority
+          </label>
+          <label className="btn btn-primary" >
+            <input type="radio" name="options" /> Low Priority
+          </label>
+        </div>
+      </div>
+    );
+  }
+
+  renderTypeFilter() {
+    return (
+      <div className='m-t-1'>
+        <h3>Filter by Type</h3>
+        <div className="btn-group" data-toggle="buttons">
+          <label className="btn btn-primary active">
+            <input type="checkbox" defaultChecked />  All Types
+          </label>
+
+          {_.map(SERVICE_CALL_TYPES, (desc, _type) => {
+            return (
+              <label className="btn btn-primary" key={_type}>
+                <input type="checkbox" />  {_type} - {desc}
+              </label>
+            )
+          })}
         </div>
       </div>
     );
@@ -86,9 +127,15 @@ class NOPDResponseTime extends Component {
             <div id="map"></div>
           </div>
           <div className="col-xs-12 col-lg-4">
-            <h2>Settings</h2>
-            {this.renderBoundaryType()}
-            <h3>{this.props.districts.length}</h3>
+            {this.renderBoundaryFilter()}
+            {this.renderPriorityFilter()}
+            {this.renderTypeFilter()}
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-xs-12 col-lg-8">
+            <h1>Results Summary</h1>
+
           </div>
         </div>
       </div>

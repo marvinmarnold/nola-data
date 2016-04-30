@@ -4,3 +4,9 @@ import { Tracts } from '../collections/tracts.js';
 Meteor.publish('tracts', () => {
   return Tracts.find();
 });
+
+Meteor.methods({
+  'tracts/avg-waits'() {
+
+  }
+});
