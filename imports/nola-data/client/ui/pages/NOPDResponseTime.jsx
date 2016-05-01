@@ -11,8 +11,15 @@ class NOPDResponseTime extends Component {
     super(props);
 
     this.state = {
-      view: STATES.VIEW.POLICE_DISTRICTS
+      view: STATES.VIEW.POLICE_DISTRICTS,
+      priorityFilter: undefined,
+      typeFilter: undefined,
+      districtSearchResults: undefined
     };
+  }
+
+  componentDidMount() {
+    this.filter();
   }
 
   viewPoliceDistricts() {
@@ -28,15 +35,29 @@ class NOPDResponseTime extends Component {
   }
 
   renderDistrictLayer() {
-    _.each(this.props.districts, district => {
-      const districtLatLngs = _.map(district.boundaries, boundary => {
-        return [boundary.latitude, boundary.longitude]
-      });
+    if(this.state.districtSearchResults) {
+      _.each(this.state.districtSearchResults, result => {
+        const district = Districts.findOne(result.objectId);
 
-      L.polygon(districtLatLngs, {color: "#000000"})
-        .bindLabel(district.name)
-        .addTo(this.props.districtLayer);
-    });
+        const districtLatLngs = _.map(district.boundaries, boundary => {
+          return [boundary.latitude, boundary.longitude]
+        });
+
+        L.polygon(districtLatLngs, {color: "#000000"})
+          .bindLabel(result.message)
+          .addTo(this.props.districtLayer);
+      });
+    } else {
+      _.each(this.props.districts, district => {
+        const districtLatLngs = _.map(district.boundaries, boundary => {
+          return [boundary.latitude, boundary.longitude]
+        });
+
+        L.polygon(districtLatLngs, {color: "#000000"})
+          .bindLabel("District #" + district.name)
+          .addTo(this.props.districtLayer);
+      });
+    }
   }
 
   renderTractLayer() {
@@ -57,14 +78,44 @@ class NOPDResponseTime extends Component {
         <h3>Select View</h3>
         <div className="btn-group" data-toggle="buttons">
           <label className="btn btn-primary active" onClick={this.viewPoliceDistricts.bind(this)} >
-            <input type="radio" name="options" defaultChecked /> Police Districts
+            <input type="radio" name="view-filter" defaultChecked /> Police Districts
           </label>
           <label className="btn btn-primary" onClick={this.viewCensusTracts.bind(this)} >
-            <input type="radio" name="options" /> Census Tracts
+            <input type="radio" name="view-filter" /> Census Tracts
           </label>
         </div>
       </div>
     );
+  }
+
+  filter() {
+    const thiz = this;
+    if(this.state.view === STATES.VIEW.POLICE_DISTRICTS) {
+      Meteor.call("districts.avgWaits", this.state.priorityFilter, this.state.typeFilter,
+        function(error, result) {
+          if(error){
+            console.log("error", error);
+          }
+          if(result) {
+            thiz.setState({districtSearchResults: result});
+          }
+      });
+    } else if(this.state.view === STATES.VIEW.CENSUS_TRACTS) {
+      // this.renderTractLayer();
+    }
+  }
+
+  filterPriority(priorityFilter) {
+    const thiz = this;
+    // wait for setState transition to finish before updating filter
+    this.setState({priorityFilter}, () => {
+      thiz.filter();
+    });
+  }
+
+  filterType(typeFilter) {
+    this.setState({typeFilter});
+    this.filter();
   }
 
   renderPriorityFilter() {
@@ -72,14 +123,14 @@ class NOPDResponseTime extends Component {
       <div className='m-t-1'>
         <h3>Filter by Priority</h3>
         <div className="btn-group" data-toggle="buttons">
-          <label className="btn btn-primary active">
-            <input type="radio" name="options" defaultChecked /> All Priorities
+          <label className="btn btn-primary active" onClick={() => this.filterPriority(undefined)}>
+            <input type="radio" name="priority-filter" defaultChecked /> All Priorities
           </label>
-          <label className="btn btn-primary">
-            <input type="radio" name="options" /> High Priority
+          <label className="btn btn-primary" onClick={() => this.filterPriority(2)}>
+            <input type="radio" name="priority-filter" /> High Priority
           </label>
-          <label className="btn btn-primary" >
-            <input type="radio" name="options" /> Low Priority
+          <label className="btn btn-primary" onClick={() => this.filterPriority(1)}>
+            <input type="radio" name="priority-filter" /> Low Priority
           </label>
         </div>
       </div>
@@ -92,13 +143,13 @@ class NOPDResponseTime extends Component {
         <h3>Filter by Type</h3>
         <div className="btn-group" data-toggle="buttons">
           <label className="btn btn-primary active">
-            <input type="checkbox" defaultChecked />  All Types
+            <input type="radio" name="type-filter" defaultChecked />  All Types
           </label>
 
           {_.map(SERVICE_CALL_TYPES, (desc, _type) => {
             return (
               <label className="btn btn-primary" key={_type}>
-                <input type="checkbox" />  {_type} - {desc}
+                <input type="radio" name="type-filter" />  {_type} - {desc}
               </label>
             )
           })}

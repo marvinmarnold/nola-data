@@ -2,20 +2,14 @@ import { Tracts } from '../../collections/tracts.js';
 import { RawTracts } from './raw-tracts.js';
 
 export default function seedTractFixtures() {
-  // console.log('district-fixtures:seedDistrictFeatures');
   if(Tracts.find().count() === 0) {
     _.each(RawTracts, tract => {
-      // console.log('district-fixtures:seedDistrictFeatures each');
-
       let i = 0;
       const boundaries = _.map(tract.geometry.coordinates[0], lnglat => {
         const edge = { longitude: lnglat[0], latitude: lnglat[1], ordinal: ++i };
-        // console.log('district-features:seedDistrictFeatures edge');
-        // console.log(edge);
 
         return edge;
       })
-      // console.log('district-features:seedDistrictFeatures boundary length: ' + boundaries.length);
 
       const properties = tract.properties;
       const tractId = Tracts.insert({
