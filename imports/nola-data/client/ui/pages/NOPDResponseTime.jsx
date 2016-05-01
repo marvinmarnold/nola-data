@@ -14,7 +14,8 @@ class NOPDResponseTime extends Component {
       view: STATES.VIEW.POLICE_DISTRICTS,
       priorityFilter: undefined,
       typeFilter: undefined,
-      districtSearchResults: undefined
+      districtSearchResults: undefined,
+      tractSearchResults: undefined
     };
   }
 
@@ -23,14 +24,20 @@ class NOPDResponseTime extends Component {
   }
 
   viewPoliceDistricts() {
+    const thiz = this;
     this.setState({
       view: STATES.VIEW.POLICE_DISTRICTS
+    }, () => {
+      thiz.filter();
     });
   }
 
   viewCensusTracts() {
+    const thiz = this;
     this.setState({
       view: STATES.VIEW.CENSUS_TRACTS
+    }, () => {
+      thiz.filter();
     });
   }
 
@@ -61,15 +68,29 @@ class NOPDResponseTime extends Component {
   }
 
   renderTractLayer() {
-    _.each(this.props.tracts, tract => {
-      const tractLatLngs = _.map(tract.boundaries, boundary => {
-        return [boundary.latitude, boundary.longitude]
-      });
+    if(this.state.tractSearchResults) {
+      _.each(this.state.tractSearchResults, result => {
+        const tract = Tracts.findOne(result.objectId);
 
-      L.polygon(tractLatLngs, {color: "#000000"})
-        .bindLabel(tract.name)
-        .addTo(this.props.tractLayer);
-    });
+        const tractLatLngs = _.map(tract.boundaries, boundary => {
+          return [boundary.latitude, boundary.longitude]
+        });
+
+        L.polygon(tractLatLngs, {color: "#000000"})
+          .bindLabel(result.message)
+          .addTo(this.props.districtLayer);
+      });
+    } else {
+      _.each(this.props.tracts, tract => {
+        const tractLatLngs = _.map(tract.boundaries, boundary => {
+          return [boundary.latitude, boundary.longitude]
+        });
+
+        L.polygon(tractLatLngs, {color: "#000000"})
+          .bindLabel("Census Tract #" + tract.name)
+          .addTo(this.props.tractLayer);
+      });
+    }
   }
 
   renderBoundaryFilter() {
@@ -101,8 +122,15 @@ class NOPDResponseTime extends Component {
           }
       });
     } else if(this.state.view === STATES.VIEW.CENSUS_TRACTS) {
-      // this.renderTractLayer();
-    }
+      Meteor.call("tracts.avgWaits", this.state.priorityFilter, this.state.typeFilter,
+        function(error, result) {
+          if(error){
+            console.log("error", error);
+          }
+          if(result) {
+            thiz.setState({tractSearchResults: result});
+          }
+      });    }
   }
 
   filterPriority(priorityFilter) {

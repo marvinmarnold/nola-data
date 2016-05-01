@@ -23,12 +23,12 @@ Meteor.methods({
     districtSearch = DistrictSearches.findOne(selector);
 
     if(districtSearch) {
-      console.log('Cached search located');
-      console.log(districtSearch);
+      console.log('Cached district search located');
+      // console.log(districtSearch);
       return districtSearch.results;
     } else {
-      console.log('No cached search');
-      console.log(selector);
+      console.log('No cached district search');
+      // console.log(selector);
       districtSearch = selector;
       selector.arrivedIn = {$exists: true}
       let avgWaits = [];
@@ -45,7 +45,13 @@ Meteor.methods({
           return total + serviceCall.arrivedIn;
         }, 0);
 
-        const waitTime = totalWait / serviceCalls.length
+        let waitTime;
+        if(totalWait === 0) {
+          waitTime = -1;
+        } else {
+          waitTime = totalWait / serviceCalls.length;
+        }
+
         avgWaits.push({
           objectId: district._id,
           waitTime: waitTime,
