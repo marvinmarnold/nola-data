@@ -9,7 +9,7 @@ Meteor.publish('districts', () => {
 
 Meteor.methods({
   'districts.avgWaits': function(priorityFilter, typeFilter) {
-    let districtSearch = {};
+    let districtSearch;
     let selector = {};
 
     if(priorityFilter) {
@@ -20,9 +20,10 @@ Meteor.methods({
       selector.nopdType = typeFilter;
     }
 
+    console.log(selector);
     districtSearch = DistrictSearches.findOne(selector);
 
-    if(districtSearch) {
+    if(!!districtSearch) {
       console.log('Cached district search located');
       // console.log(districtSearch);
       return districtSearch.results;
@@ -67,7 +68,10 @@ Meteor.methods({
 
       districtSearch.updatedAt = new Date();
       districtSearch.results = avgWaits;
-      DistrictSearches.insert(districtSearch);
+      console.log(districtSearch);
+      const searchId = DistrictSearches.insert(districtSearch);
+      console.log(searchId);
+      console.log(DistrictSearches.find().count());
 
       return avgWaits;
     }

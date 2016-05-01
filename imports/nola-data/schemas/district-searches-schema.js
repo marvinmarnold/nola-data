@@ -1,11 +1,11 @@
 import ResultsSchema from './results-schema.js';
 
 export default DistrictSearchesSchema = new SimpleSchema({
-  priorityFilter: {
-    type: String,
+  priorityNum: {
+    type: Number,
     optional: true
   },
-  typeFilter: {
+  nopdType: {
     type: String,
     optional: true
   },
