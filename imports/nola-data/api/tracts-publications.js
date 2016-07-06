@@ -60,7 +60,7 @@ Meteor.methods({
         })
       });
 
-      _.sortBy(avgWaits, "waitTime");
+      avgWaits = _.sortBy(avgWaits, "waitTime");
 
       for(let i = 0; i < avgWaits.length; i++) {
         avgWaits[i].rank = i;

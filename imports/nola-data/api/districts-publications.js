@@ -60,7 +60,7 @@ Meteor.methods({
         })
       });
 
-      _.sortBy(avgWaits, "waitTime");
+      avgWaits = _.sortBy(avgWaits, "waitTime");
 
       for(let i = 0; i < avgWaits.length; i++) {
         avgWaits[i].rank = i;
@@ -68,10 +68,7 @@ Meteor.methods({
 
       districtSearch.updatedAt = new Date();
       districtSearch.results = avgWaits;
-      console.log(districtSearch);
       const searchId = DistrictSearches.insert(districtSearch);
-      console.log(searchId);
-      console.log(DistrictSearches.find().count());
 
       return avgWaits;
     }

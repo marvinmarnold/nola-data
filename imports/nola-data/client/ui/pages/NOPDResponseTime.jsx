@@ -93,22 +93,6 @@ class NOPDResponseTime extends Component {
     }
   }
 
-  renderBoundaryFilter() {
-    return (
-      <div className='m-t-1'>
-        <h3>Select View</h3>
-        <div className="btn-group" data-toggle="buttons">
-          <label className="btn btn-primary active" onClick={this.viewPoliceDistricts.bind(this)} >
-            <input type="radio" name="view-filter" defaultChecked /> Police Districts
-          </label>
-          <label className="btn btn-primary" onClick={this.viewCensusTracts.bind(this)} >
-            <input type="radio" name="view-filter" /> Census Tracts
-          </label>
-        </div>
-      </div>
-    );
-  }
-
   filter() {
     const thiz = this;
     if(this.state.view === STATES.VIEW.POLICE_DISTRICTS) {
@@ -133,6 +117,19 @@ class NOPDResponseTime extends Component {
       });    }
   }
 
+  renderBoundaryFilter() {
+    return (
+      <div className="btn-group" data-toggle="buttons">
+        <label className="btn btn-primary active" onClick={this.viewPoliceDistricts.bind(this)} >
+          <input type="radio" name="view-filter" defaultChecked /> Police Districts
+        </label>
+        <label className="btn btn-primary" onClick={this.viewCensusTracts.bind(this)} >
+          <input type="radio" name="view-filter" /> Census Tracts
+        </label>
+      </div>
+    );
+  }
+
   filterPriority(priorityFilter) {
     const thiz = this;
     // wait for setState transition to finish before updating filter
@@ -142,49 +139,73 @@ class NOPDResponseTime extends Component {
   }
 
   filterType(typeFilter) {
-    this.setState({typeFilter});
-    this.filter();
+    const thiz = this;
+    // wait for setState transition to finish before updating filter
+    this.setState({typeFilter}, () => {
+      thiz.filter();
+    });
   }
 
   renderPriorityFilter() {
     return (
-      <div className='m-t-1'>
-        <h3>Filter by Priority</h3>
-        <div className="btn-group" data-toggle="buttons">
-          <label className="btn btn-primary active" onClick={() => this.filterPriority(undefined)}>
-            <input type="radio" name="priority-filter" defaultChecked /> All Priorities
-          </label>
-          <label className="btn btn-primary" onClick={() => this.filterPriority(2)}>
-            <input type="radio" name="priority-filter" /> High Priority
-          </label>
-          <label className="btn btn-primary" onClick={() => this.filterPriority(1)}>
-            <input type="radio" name="priority-filter" /> Low Priority
-          </label>
-        </div>
+      <div className="btn-group" data-toggle="buttons">
+        <label className="btn btn-primary active" onClick={() => this.filterPriority(undefined)}>
+          <input type="radio" name="priority-filter" defaultChecked /> All Priorities
+        </label>
+        <label className="btn btn-primary" onClick={() => this.filterPriority(2)}>
+          <input type="radio" name="priority-filter" /> High Priority
+        </label>
+        <label className="btn btn-primary" onClick={() => this.filterPriority(1)}>
+          <input type="radio" name="priority-filter" /> Low Priority
+        </label>
       </div>
     );
   }
 
   renderTypeFilter() {
     return (
-      <div className='m-t-1'>
-        <h3>Filter by Type</h3>
-        <div className="btn-group" data-toggle="buttons">
-          <label className="btn btn-primary active">
-            <input type="radio" name="type-filter" defaultChecked />  All Types
-          </label>
+      <div className="btn-group" data-toggle="buttons">
+        <label className="btn btn-primary active" onClick={() => this.filterType(undefined)}>
+          <input type="radio" name="type-filter" defaultChecked />  All Types
+        </label>
 
-          {_.map(SERVICE_CALL_TYPES, (desc, _type) => {
-            return (
-              <label className="btn btn-primary" key={_type}>
-                <input type="radio" name="type-filter" />  {_type} - {desc}
-              </label>
-            )
-          })}
-        </div>
+        {_.map(SERVICE_CALL_TYPES, (desc, _type) => {
+          return (
+            <label className="btn btn-primary" key={_type} onClick={() => this.filterType(_type)}>
+              <input type="radio" name="type-filter" />  {_type} - {desc}
+            </label>
+          )
+        })}
       </div>
     );
   }
+
+  renderResults() {
+    if(this.state.districtSearchResults && (this.state.view === STATES.VIEW.POLICE_DISTRICTS)) {
+      return this.renderDistrictResults();
+    } else if(this.state.tractSearchResults && (this.state.view === STATES.VIEW.CENSUS_TRACTS)) {
+      return this.renderTractResults();
+    }
+  }
+
+  renderDistrictResults() {
+    return (
+      <ul>
+        {_.map(this.state.districtSearchResults, result => {
+          return <h4 key={result.objectId}>#{result.rank+1} - {result.message}</h4>
+        })}
+      </ul>
+    );
+  }
+
+  renderTractResults() {
+    return (
+      <ul>
+        {_.map(this.state.tractSearchResults, result => {
+          return <h4 key={result.objectId}>#{result.rank+1} - {result.message}</h4>
+        })}
+      </ul>
+    );  }
 
   render() {
     if(!this.props.loading) {
@@ -204,17 +225,48 @@ class NOPDResponseTime extends Component {
           <div className="col-xs-12 col-lg-8">
             <h1>Map</h1>
             <div id="map"></div>
+            <h1>Results Summary</h1>
+            {this.renderResults()}
           </div>
           <div className="col-xs-12 col-lg-4">
-            {this.renderBoundaryFilter()}
-            {this.renderPriorityFilter()}
-            {this.renderTypeFilter()}
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-xs-12 col-lg-8">
-            <h1>Results Summary</h1>
-
+            <div id="accordion" role="tablist" aria-multiselectable="true" className='m-t-3'>
+              <div className="panel panel-default">
+                <div className="panel-heading" role="tab" id="headingOne">
+                  <h4 className="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                      <h3>Select View</h3>
+                    </a>
+                  </h4>
+                </div>
+                <div id="collapseOne" className="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                  {this.renderBoundaryFilter()}
+                </div>
+              </div>
+              <div className="panel panel-default">
+                <div className="panel-heading" role="tab" id="headingTwo">
+                  <h4 className="panel-title">
+                    <a className="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                      <h3>Filter by Priority</h3>
+                    </a>
+                  </h4>
+                </div>
+                <div id="collapseTwo" className="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                  {this.renderPriorityFilter()}
+                </div>
+              </div>
+              <div className="panel panel-default">
+                <div className="panel-heading" role="tab" id="headingThree">
+                  <h4 className="panel-title">
+                    <a className="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                      <h3>Filter by Type</h3>
+                    </a>
+                  </h4>
+                </div>
+                <div id="collapseThree" className="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                  {this.renderTypeFilter()}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
