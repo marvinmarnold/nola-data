@@ -11,7 +11,7 @@ export default StuffsSchema = new SimpleSchema({
   url: {
     type: String
   },
-  logoUrl: {
+  iconUrl: {
     type: String
   },
   popularity: {

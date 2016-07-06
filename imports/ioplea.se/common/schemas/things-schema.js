@@ -11,7 +11,7 @@ export default ThingsSchema = new SimpleSchema({
   url: {
     type: String
   },
-  logoUrl: {
+  iconUrl: {
     type: String
   }
 });
