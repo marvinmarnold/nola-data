@@ -9,6 +9,12 @@ export default class Index extends Component {
         description: "Explore how quickly NOPD respond to service calls across New Orelans.",
         url: "/nopd-response-time-2016"
       },
+      {
+        _id: "2",
+        name: "ioPLEA.SE",
+        description: "Do stuff with your IoT",
+        url: "/ioplease"
+      }
     ];
   }
 
