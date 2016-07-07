@@ -23,6 +23,7 @@ export default StuffsSchema = new SimpleSchema({
     optional: true
   },
   updatedAt: {
-    type: Date
+    type: Date,
+    optional: true
   }
 });
