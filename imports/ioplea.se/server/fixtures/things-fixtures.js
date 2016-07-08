@@ -3,6 +3,7 @@ import { Things } from '../../common/collections/things.js';
 const things = [
   {
     name: "Fitbit Flex",
+    searchableName: "fitbit flex",
     description: "Whether you want to use heart rate to take your fitness to the next level or just want to see how your steps add up each day, there’s a Fitbit tracker for your goals.",
     company: "Fitbit",
     url: "http://www.fitbit.com/flex",

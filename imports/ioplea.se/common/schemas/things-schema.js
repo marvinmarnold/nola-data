@@ -2,6 +2,9 @@ export default ThingsSchema = new SimpleSchema({
   name: {
     type: String
   },
+  searchableName: {
+    type: String
+  },
   description: {
     type: String
   },
