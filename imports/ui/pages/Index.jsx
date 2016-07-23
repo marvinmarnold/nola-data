@@ -14,6 +14,12 @@ export default class Index extends Component {
         name: "ioPLEA.SE",
         description: "Do stuff with your IoT",
         url: "/ioplease"
+      },
+      {
+        _id: "3",
+        name: "mexEco",
+        description: "Investigate envrionmental & ecological integrity in Mexico.",
+        url: "/mexEco"
       }
     ];
   }

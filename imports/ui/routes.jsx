@@ -6,6 +6,7 @@ import App from './App.jsx';
 import Index from './pages/Index.jsx';
 import NOPDResponseTime from '../nola-data/client/ui/pages/NOPDResponseTime.jsx';
 import IOPlease from '../ioplea.se/client/ui/pages/IOPlease.jsx';
+import MexEco from '../mexEco/client/ui/pages/MexEco.jsx';
 
 export const renderRoutes = () => (
   <Router history={browserHistory}>
@@ -13,6 +14,7 @@ export const renderRoutes = () => (
       <IndexRoute component={Index} />
       <Route path="nopd-response-time-2016" component={NOPDResponseTime} />
       <Route path="ioplease" component={IOPlease} />
+      <Route path="mexEco" component={MexEco} />
     </Route>
   </Router>
 );

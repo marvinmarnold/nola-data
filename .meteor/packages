@@ -20,7 +20,8 @@ ecmascript              # Enable ECMAScript2015+ syntax in app code
 twbs:bootstrap
 static-html
 react-meteor-data
-pauloborges:mapbox
 aldeed:collection2
 aldeed:simple-schema
 http
+accounts-ui
+accounts-password

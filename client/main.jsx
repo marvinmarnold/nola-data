@@ -3,10 +3,11 @@ import { Meteor } from 'meteor/meteor';
 import { render } from 'react-dom';
 import { renderRoutes } from '../imports/ui/routes.jsx';
 
-import startupNolaDataClient from '../imports/nola-data/client/startup.js';
+import startupMexEcoClient from '../imports/mexEco/client/startup.js';
+// import startupNolaDataClient from '../imports/nola-data/client/startup.js';
 
 Meteor.startup(() => {
   render(renderRoutes(), document.getElementById('render-target'));
 
-  startupNolaDataClient();
+  startupMexEcoClient();
 });
