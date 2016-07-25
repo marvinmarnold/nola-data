@@ -1,10 +1,16 @@
 import { Meteor } from 'meteor/meteor';
-import React, { Component } from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
-import { Navbar } from '../components/Navbar.jsx';
+
+import React, { Component } from 'react';
 import Mapbox from 'mapbox';
 import Draw from 'mapbox-gl-draw';
+
 import { Polygons } from '../../../common/collections/polygons.js';
+
+import { Navbar } from '../components/Navbar.jsx';
+import { PolygonForm } from '../components/PolygonForm.jsx';
+
+import { SESSION } from '../../constants.js';
 
 class MexEco extends Component {
   constructor(props) {
@@ -30,7 +36,9 @@ class MexEco extends Component {
                 <div id="map"></div>
               </div>
               <div className="col-xs-12 col-lg-4">
-
+                <PolygonForm
+                  currentPolygon={this.props.currentPolygon}
+                  insertingPolygon={this.props.insertingPolygon} />
               </div>
             </div>
           </div>
@@ -42,12 +50,19 @@ class MexEco extends Component {
 MexEco.propTypes = {
   loading: React.PropTypes.bool,
   map: React.PropTypes.object,
-  initMap: React.PropTypes.func
+  initMap: React.PropTypes.func,
+  currentPolygon: React.PropTypes.object,
+  insertingPolygon: React.PropTypes.bool
 };
 
 let map
 
 export default createContainer(() => {
+  currentPolygon = Session.get(SESSION.POLYGON);
+  insertingPolygon = Session.get(SESSION.INSERTING);
+
+  console.log("addingPolygon");
+  console.log(insertingPolygon);
 
   const initMap = () => {
     if(!map) {
@@ -79,12 +94,13 @@ export default createContainer(() => {
               type: poly.type,
               geometry: {
                 type: poly.geometry.type,
-                coordinates: poly.geometry.coordinates
+                coordinates: poly.geometry.coordinates[0]
               }
             }
           }
 
-          console.log(polygon);
+          Session.set(SESSION.POLYGON, polygon);
+          Session.set(SESSION.INSERTING, true);
         })
       });
     }
@@ -101,7 +117,9 @@ export default createContainer(() => {
 
   return {
     loading: false,
-    map: map,
-    initMap: initMap
+    map,
+    initMap,
+    currentPolygon,
+    insertingPolygon
   };
 }, MexEco);
