@@ -6,6 +6,8 @@
   },
   "dependencies": {
     "mapbox": "^1.0.0-beta2",
+    "mapbox-gl": "^0.21.0",
+    "mapbox-gl-draw": "^0.11.11",
     "meteor-node-stubs": "~0.2.0",
     "node-socrata": "0.0.50",
     "react": "^15.0.1",

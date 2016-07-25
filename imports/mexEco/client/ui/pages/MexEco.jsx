@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
 import { Navbar } from '../components/Navbar.jsx';
 import Mapbox from 'mapbox';
+import Draw from 'mapbox-gl-draw';
+import { Polygons } from '../../../common/collections/polygons.js';
 
 class MexEco extends Component {
   constructor(props) {
@@ -49,13 +51,42 @@ export default createContainer(() => {
 
   const initMap = () => {
     if(!map) {
-      L.mapbox.accessToken = Meteor.settings.public.MAPBOX_TOKEN;
+      mapboxgl.accessToken = Meteor.settings.public.MAPBOX_TOKEN;
 
-      map = L.mapbox.map('map').setView([
-        19.416424, -99.138173
-      ], 7);
+      map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/unplugged/ciqzoiuob0008bmm6gxph8irp',
+        center: [-99.138173, 19.416424],
+        zoom: 5
+      });
 
-      L.mapbox.styleLayer('mapbox://styles/unplugged/ciqzoiuob0008bmm6gxph8irp').addTo(map);
+      var draw = Draw({
+        controls: {
+          point: false,
+          line_string: false,
+          polygon: true,
+          trash: false
+        }
+      });
+      map.addControl(draw);
+
+      // draw controls
+      map.on('draw.create', (event) => {
+        _.each(event.features, poly => {
+          const polygon = {
+            name: poly.id,
+            geoJSON: {
+              type: poly.type,
+              geometry: {
+                type: poly.geometry.type,
+                coordinates: poly.geometry.coordinates
+              }
+            }
+          }
+
+          console.log(polygon);
+        })
+      });
     }
 
   };
