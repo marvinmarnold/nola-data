@@ -8,7 +8,7 @@ import Draw from 'mapbox-gl-draw';
 import { Polygons } from '../../../common/collections/polygons.js';
 
 import { Navbar } from '../components/Navbar.jsx';
-import { PolygonForm } from '../components/PolygonForm.jsx';
+import PolygonForm from '../components/PolygonForm.jsx';
 
 import { SESSION } from '../../constants.js';
 
@@ -29,16 +29,15 @@ class MexEco extends Component {
       <div>
         <Navbar />
           <div className="container-fluid">
-
+            <h1>Map</h1>
             <div className="row">
-              <div className="col-xs-12 col-lg-8">
-                <h1>Map</h1>
-                <div id="map"></div>
-              </div>
-              <div className="col-xs-12 col-lg-4">
+              <div className="col-xs-12 col-xl-5">
                 <PolygonForm
                   currentPolygon={this.props.currentPolygon}
                   insertingPolygon={this.props.insertingPolygon} />
+              </div>
+              <div className="col-xs-12 col-xl-7">
+                <div id="map"></div>
               </div>
             </div>
           </div>
@@ -61,8 +60,11 @@ export default createContainer(() => {
   currentPolygon = Session.get(SESSION.POLYGON);
   insertingPolygon = Session.get(SESSION.INSERTING);
 
-  console.log("addingPolygon");
+  console.log("insertingPolygon");
   console.log(insertingPolygon);
+
+  console.log("currentPolygon");
+  console.log(currentPolygon);
 
   const initMap = () => {
     if(!map) {
@@ -106,14 +108,6 @@ export default createContainer(() => {
     }
 
   };
-
-  // Tracker.autorun(() => {
-  //   // if (Mapbox.loaded()) {
-  //     if(!map) {
-  //       initMap();
-  //     }
-  //   // }
-  // });
 
   return {
     loading: false,

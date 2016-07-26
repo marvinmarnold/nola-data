@@ -6,4 +6,5 @@ import { startupMexEco } from '../imports/mexEco/server/startup.js';
 Meteor.startup(() => {
   // startupNolaDataServer();
   startupIOPlease();
+  startupMexEco();
 });
