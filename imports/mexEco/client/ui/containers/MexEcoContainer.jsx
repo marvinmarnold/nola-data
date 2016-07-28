@@ -61,10 +61,9 @@ export default MexEcoContainer = createContainer(() => {
   };
 
   return {
-    loading: false,
     map,
     initMap,
     currentPolygon,
-    insertingPolygon
+    insertingPolygon,
   };
 }, MexEco);
