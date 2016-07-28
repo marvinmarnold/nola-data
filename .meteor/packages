@@ -26,3 +26,4 @@ http
 accounts-ui
 accounts-password
 session
+simple:rest

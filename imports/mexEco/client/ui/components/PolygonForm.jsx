@@ -22,35 +22,69 @@ export default class PolygonForm extends Component {
     });
   }
 
+  submitForm() {
+    console.log('submit form');
+    const form = ReactDOM.findDOMNode(this.refs.polygonForm);
+    console.log(form);
+    $(form).submit(this.handleSubmit.bind(this));
+    $(form).trigger('submit');
+  }
+
   handleSubmit(event) {
+    const thiz = this;
+    console.log('handleSubmit');
+    console.log(thiz.props.questions);
     event.preventDefault();
     // Find the name field via the React ref
-    const name = ReactDOM.findDOMNode(this.refs.name).value.trim();
+    const name = ReactDOM.findDOMNode(thiz.refs.name).value.trim();
 
     let polygon = Session.get(SESSION.POLYGON)
     polygon = _.extend(polygon, {name})
 
-    // Clear form
-    ReactDOM.findDOMNode(this.refs.name).value = '';
-
-    Meteor.call("polygons.insert", polygon, (error, result) => {
+    Meteor.call("polygons.insert", polygon, (error, polygonId) => {
       console.log('polygons.insert');
       console.log(polygon);
       if(error) {
         console.log("error", error);
       }
-      if(result) {
+      if(polygonId) {
         console.log("success");
+        _.each(thiz.props.questions, (question) => {
+          thiz.answerQuestion(question._id, polygonId)
+        })
 
         Session.set(SESSION.POLYGON, undefined);
+        // Clear form
+        ReactDOM.findDOMNode(thiz.refs.name).value = '';
       }
     });
   }
 
-  renderScore(score) {
+  answerQuestion(questionId, polygonId) {
+    console.log('answerQuestion');
+    console.log(questionId);
+
+    const val = $('input[name=inlineRadioOptions' + questionId + ']:checked', '#polygonForm').val()
+
+    console.log(val);
+
+    Meteor.call("polygon.answerQuestion", polygonId, questionId, val,
+      (error, result) => {
+        console.log("question.answer");
+
+        if(error) {
+          console.log("error", error);
+        }
+        if(result) {
+
+        }
+      });
+  }
+
+  renderScore(score, question) {
     return (
       <label className="form-check-inline" key={score}>
-        <input className="form-check-input" type="radio" name="inlineRadioOptions" id={"inlineRadio" + score} value={"option" + score} /> {score}
+        <input className="form-check-input" type="radio" name={"inlineRadioOptions" + question._id} id={"inlineRadio" + score} value={score} /> {score}
       </label>
     )
   }
@@ -59,7 +93,9 @@ export default class PolygonForm extends Component {
     return (
       <fieldset className="form-group" key={question._id}>
         <label>{question.text}</label><br/>
-        {SCORES.map(this.renderScore.bind(this))}
+        {
+          SCORES.map((score) => { return this.renderScore(score, question) })
+        }
       </fieldset>
     )
   }
@@ -74,7 +110,7 @@ export default class PolygonForm extends Component {
 
   renderModalBody() {
     return (
-      <form onSubmit={this.handleSubmit.bind(this)}>
+      <form onSubmit={this.handleSubmit.bind(this)} ref='polygonForm' id='polygonForm'>
         <div className="form-group">
           <label htmlFor="name" >What would you like to name this region?</label>
           <input className="form-control" type="text" id="name" ref="name" />
@@ -104,8 +140,7 @@ export default class PolygonForm extends Component {
               {this.renderModalBody()}
             </div>
             <div className="modal-footer">
-
-
+              {this.renderSubmit()}
             </div>
           </div>
         </div>
@@ -116,11 +151,11 @@ export default class PolygonForm extends Component {
   renderSubmit() {
     if(this.props.isLoading) {
       return (
-        <button type="submit" className="btn btn-primary btn-block">Loading...</button>
+        <button className="btn btn-primary btn-block" disabled>Loading...</button>
       )
     } else {
       return (
-        <button type="submit" className="btn btn-primary btn-block">Create region</button>
+        <button className="btn btn-primary btn-block" onClick={this.submitForm.bind(this)}>Create region</button>
       )
     }
   }
