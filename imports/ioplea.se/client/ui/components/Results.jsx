@@ -7,13 +7,17 @@ class Results extends Component {
 
   render() {
     return (
-      <h1>{this.props.query}</h1>
+      <div>
+        <h1>{this.props.query}</h1>
+        <h2>{this.props.thingId}</h2>
+      </div>
     );
   }
 }
 
-export default createContainer(({query}) => {
+export default createContainer(({query, thingId}) => {
   return {
-    query
+    query,
+    thingId
   };
 }, Results);

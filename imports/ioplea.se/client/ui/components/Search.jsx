@@ -26,22 +26,26 @@ class Search extends Component {
     super(props);
 
     this.state = {
-      value: '',
-      loading: false
+      value: ''
     };
   }
 
-  handleSearch(event, value) {
+  handleSearch(event, value, thingId) {
     if(event)
       event.preventDefault()
-    const thiz = this;
-    console.log("something changed bro");
-    this.setState({ value, loading: true })
 
-    this.props.setQuery(value);
-    // fakeRequest(value, (items) => {
-    //   this.setState({ things: items, loading: false })
-    // })
+    const thiz = this;
+    this.setState({ value })
+
+    this.props.setQuery(value, thingId);
+  }
+
+  renderItem(item, isHighlighted) {
+    return (
+      <div
+        style={isHighlighted ? styles.highlightedItem : styles.item}
+        key={item._id}>{item.name}</div>
+    )
   }
 
   render() {
@@ -63,18 +67,11 @@ class Search extends Component {
 
                 // set the menu to only the selected item
                 this.setState({ value, things: [ item ] })
-                this.handleSearch(undefined, value)
-                // or you could reset it to a default list again
-                // this.setState({ unitedStates: getStates() })
+                this.handleSearch(undefined, value, item._id)
+
               }}
               onChange={this.handleSearch.bind(this)}
-              renderItem={(item, isHighlighted) => (
-                <div
-                  style={isHighlighted ? styles.highlightedItem : styles.item}
-                  key={item._id}
-                  id={item._id}
-                >{item.name}</div>
-              )}
+              renderItem={this.renderItem.bind(this)}
           />
           <small id="iothing-help" className="form-text text-muted">Device name, manufacturer, etc. of IoT device you own</small>
         </div>

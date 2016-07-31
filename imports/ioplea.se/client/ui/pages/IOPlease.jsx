@@ -8,12 +8,13 @@ export default class Index extends Component {
 
     this.state = {
       query: '',
+      thingId: undefined
     };
   }
 
-  setQuery(query) {
+  setQuery(query, thingId) {
     console.log('setQuery');
-    this.setState({query})
+    this.setState({query, thingId})
   }
 
   render() {
@@ -26,7 +27,7 @@ export default class Index extends Component {
             <h2>with your IoThings</h2>
 
             <Search setQuery={this.setQuery.bind(this)}/>
-            <Results query={this.state.query} />
+            <Results query={this.state.query} thingId={this.state.thingId} />
           </div>
         </div>
       </div>
