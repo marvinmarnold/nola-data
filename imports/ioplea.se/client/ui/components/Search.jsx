@@ -54,7 +54,7 @@ class Search extends Component {
         <div className="form-group">
           <Autocomplete
             inputProps={{
-                className: "form-control",
+                className: "form-control form-control-lg",
                 id: "iothing-autocomplete",
                 placeholder: "I want to do something with my..."
               }}
@@ -63,8 +63,6 @@ class Search extends Component {
               items={this.props.things}
               getItemValue={(item) => item.name}
               onSelect={(value, item) => {
-                console.log("onSelect");
-
                 // set the menu to only the selected item
                 this.setState({ value, things: [ item ] })
                 this.handleSearch(undefined, value, item._id)
@@ -82,8 +80,6 @@ class Search extends Component {
 
 export default createContainer(({setQuery}) => {
   Meteor.subscribe("things");
-
-  console.log(Things.find().fetch());
 
   return {
     things: Things.find().fetch(),

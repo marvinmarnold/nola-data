@@ -1,0 +1,4 @@
+a.stuff-card, a.stuff-card:hover, a.stuff-card:visited, a.stuff-card:active {
+  text-decoration: none;
+  color: #000;
+}
