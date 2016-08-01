@@ -23,8 +23,8 @@ export default class Index extends Component {
         <div className="ioplease-banner">
           <div className="container-fluid text-xs-center">
             <div className="row">
-              <div className="col-xs-12 col-sm-10 offset-sm-1 col-md-8 offset-md-2">
-                <h1 className='m-t-3'><stong>Do stuff</stong> with your IoT</h1>
+              <div className="col-xs-12 col-sm-10 offset-sm-1 col-md-6 offset-md-3">
+                <h1 className='ioplease-title'><stong>Do stuff</stong> with your IoT</h1>
 
                 <Search setQuery={this.setQuery.bind(this)}/>
               </div>
@@ -32,7 +32,7 @@ export default class Index extends Component {
           </div>
         </div>
 
-        <div className="container-fluid text-xs-center">
+        <div className="container-fluid text-xs-center content">
           <div className="row">
             <div className="col-xs-12 col-sm-10 offset-sm-1 col-md-8 offset-md-2">
               {this.state.query == "" ? null : <Results query={this.state.query} thingId={this.state.thingId} />}

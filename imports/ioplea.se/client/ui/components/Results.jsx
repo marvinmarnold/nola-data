@@ -28,13 +28,20 @@ class Results extends Component {
     )
   }
 
+  renderResultsCount() {
+    return this.props.stuffs.length == 1 ? "result" : "results"
+  }
+
   render() {
     if(this.props.loading) {
       return <h1>Loading...</h1>
     } else {
       return (
-        <div className='m-t-3 row'>
-          {this.props.stuffs.map(this.renderStuff)}
+        <div className='m-t-2'>
+          <h2>{this.props.stuffs.length} {this.renderResultsCount()}</h2>
+          <div className='row m-t-2'>
+            {this.props.stuffs.map(this.renderStuff)}
+          </div>
         </div>
       );
     }

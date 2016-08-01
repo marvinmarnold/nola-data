@@ -6,26 +6,46 @@ a.stuff-card, a.stuff-card:hover, a.stuff-card:visited, a.stuff-card:active {
 .ioplease-banner {
   background-image: url('/hands.jpg');
   width: 100%;
-  min-height: 17rem;
-  padding-top: 4rem;
-  padding-bottom: 4rem;
+  min-height: 15rem;
+  padding-top: 3rem;
+  padding-bottom: 3rem;
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center center;
+}
+
+.ioplease-title {
   color: #fff;
 }
 
-#footer {
+#ioplease-footer {
   position: fixed;
   left: 0px;
   bottom: 0px;
-  height: 15rem;
+  min-height: 7rem;
   width: 100%;
   background: #1d1411;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
 }
 
 /* IE 6 */
-* html #footer {
-  position:absolute;
+* html #ioplease-footer {
+  position: absolute;
   top:expression((0-(footer.offsetHeight)+(document.documentElement.clientHeight ? document.documentElement.clientHeight : document.body.clientHeight)+(ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop))+'px');
+}
+
+.ioplease-banner {
+  background-image: url('/hands.jpg');
+  width: 100%;
+  min-height: 15rem;
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+.content {
+  margin-bottom: 8rem;
 }

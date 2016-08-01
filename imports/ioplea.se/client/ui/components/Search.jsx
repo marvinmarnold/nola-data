@@ -50,14 +50,16 @@ class Search extends Component {
 
   render() {
     return (
-      <form className='m-t-3'>
+      <form className='m-t-2'>
         <div className="form-group">
           <Autocomplete
             inputProps={{
                 className: "form-control form-control-lg",
                 id: "iothing-autocomplete",
-                placeholder: "I want to do something with my..."
+                placeholder: "I want to do something with my...",
+                type: "text",
               }}
+              wrapperStyle={{}}
               ref="autocomplete"
               value={this.state.value}
               items={this.props.things}
