@@ -2,3 +2,30 @@ a.stuff-card, a.stuff-card:hover, a.stuff-card:visited, a.stuff-card:active {
   text-decoration: none;
   color: #000;
 }
+
+.ioplease-banner {
+  background-image: url('/hands.jpg');
+  width: 100%;
+  min-height: 17rem;
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  color: #fff;
+}
+
+#footer {
+  position: fixed;
+  left: 0px;
+  bottom: 0px;
+  height: 15rem;
+  width: 100%;
+  background: #1d1411;
+}
+
+/* IE 6 */
+* html #footer {
+  position:absolute;
+  top:expression((0-(footer.offsetHeight)+(document.documentElement.clientHeight ? document.documentElement.clientHeight : document.body.clientHeight)+(ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop))+'px');
+}
