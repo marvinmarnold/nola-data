@@ -19,7 +19,7 @@ export default class Index extends Component {
 
   render() {
     return (
-      <div>
+      <div id='ioplease'>
         <div className="ioplease-banner">
           <div className="container-fluid text-xs-center">
             <div className="row">
@@ -32,7 +32,7 @@ export default class Index extends Component {
           </div>
         </div>
 
-        <div className="container-fluid text-xs-center content">
+        <div className="container-fluid text-xs-center" id='content'>
           <div className="row">
             <div className="col-xs-12 col-sm-10 offset-sm-1 col-md-8 offset-md-2">
               {this.state.query == "" ? null : <Results query={this.state.query} thingId={this.state.thingId} />}
