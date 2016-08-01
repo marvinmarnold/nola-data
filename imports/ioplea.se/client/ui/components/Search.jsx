@@ -73,7 +73,7 @@ class Search extends Component {
               onChange={this.handleSearch.bind(this)}
               renderItem={this.renderItem.bind(this)}
           />
-          <small id="iothing-help" className="form-text text-muted">Device name, manufacturer, etc. of IoT device you own</small>
+          <small id="iothing-help" className="form-text text-muted">Device name, manufacturer, etc.</small>
         </div>
       </form>
     );

@@ -13,14 +13,44 @@ export default class Index extends Component {
     };
   }
 
+  hasQuery() {
+    return this.state.query != ""
+  }
+
   setQuery(query, thingId) {
     this.setState({query, thingId})
   }
 
   render() {
-    return (
+    if(this.hasQuery()) {
+      return (
+        <div id='ioplease'>
+          <div className="ioplease-banner">
+            <div className="container-fluid text-xs-center">
+              <div className="row">
+                <div className="col-xs-12 col-sm-10 offset-sm-1 col-md-6 offset-md-3">
+                  <h1 className='ioplease-title'><stong>Do stuff</stong> with your IoT</h1>
+
+                  <Search setQuery={this.setQuery.bind(this)}/>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="container-fluid text-xs-center" id='content'>
+            <div className="row">
+              <div className="col-xs-12 col-sm-10 offset-sm-1 col-md-8 offset-md-2">
+                <Results query={this.state.query} thingId={this.state.thingId} />
+              </div>
+            </div>
+          </div>
+
+          <Footer />
+        </div>
+      );
+    } else {
       <div id='ioplease'>
-        <div className="ioplease-banner">
+        <div className="ioplease-banner-full">
           <div className="container-fluid text-xs-center">
             <div className="row">
               <div className="col-xs-12 col-sm-10 offset-sm-1 col-md-6 offset-md-3">
@@ -32,16 +62,9 @@ export default class Index extends Component {
           </div>
         </div>
 
-        <div className="container-fluid text-xs-center" id='content'>
-          <div className="row">
-            <div className="col-xs-12 col-sm-10 offset-sm-1 col-md-8 offset-md-2">
-              {this.state.query == "" ? null : <Results query={this.state.query} thingId={this.state.thingId} />}
-            </div>
-          </div>
-        </div>
-
         <Footer />
       </div>
-    );
+    }
+
   }
 }
