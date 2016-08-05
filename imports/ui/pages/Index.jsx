@@ -39,9 +39,9 @@ export default class Index extends Component {
   render() {
     return (
       <div className="container">
-        <header className="m-t-2">
+        <div className="m-t-2">
           <h1>Projects</h1>
-        </header>
+        </div>
 
         <div className="row">
           {this.renderProjects()}
