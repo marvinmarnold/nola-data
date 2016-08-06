@@ -14,7 +14,7 @@ export default class Index extends Component {
   }
 
   hasQuery() {
-    return this.state.query != ""
+    return this.state.query !== ""
   }
 
   setQuery(query, thingId) {
@@ -45,25 +45,31 @@ export default class Index extends Component {
             </div>
           </div>
 
-          <Footer />
+          <div id="ioplease-footer" className="text-xs-center">
+            <div className="container">
+              <Footer />
+            </div>
+          </div>
         </div>
       );
     } else {
-      <div id='ioplease'>
-        <div className="ioplease-banner-full">
-          <div className="container-fluid text-xs-center">
-            <div className="row">
-              <div className="col-xs-12 col-sm-10 offset-sm-1 col-md-6 offset-md-3">
-                <h1 className='ioplease-title'><stong>Do stuff</stong> with your IoT</h1>
+      return (
+        <div id='ioplease'>
+          <div className="ioplease-banner-full">
+            <div className="container-fluid text-xs-center">
+              <div className="row">
+                <div className="col-xs-12 col-sm-10 offset-sm-1 col-md-6 offset-md-3">
+                  <h1 className='ioplease-title'><stong>Do stuff</stong> with your IoT</h1>
 
-                <Search setQuery={this.setQuery.bind(this)}/>
+                  <Search setQuery={this.setQuery.bind(this)}/>
+
+                  <Footer className='m-t-3'/>
+                </div>
               </div>
             </div>
           </div>
         </div>
-
-        <Footer />
-      </div>
+      )
     }
 
   }

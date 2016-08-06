@@ -3,8 +3,7 @@ import React, { Component } from 'react';
 export default class Footer extends Component {
   render() {
     return (
-      <div id="ioplease-footer" className="text-xs-center">
-        <div className="container">
+        <div>
           <div className="row">
             <div className="col-xs-12">
               <span className='m-r-1'><a href="https://github.com/marvinmarnold/nola-data">Fork me on Github</a></span> |
@@ -17,9 +16,6 @@ export default class Footer extends Component {
             </div>
           </div>
         </div>
-
-
-      </div>
     )
   }
 }
